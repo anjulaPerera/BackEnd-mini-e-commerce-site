@@ -1,11 +1,12 @@
 /// <reference path="global.d.ts" />
 const app = require("express")();
-import { Request, Response } from "express";
-
+import { NextFunction, Request, Response } from "express";
+const routes = require("./routes");
+import { ResponseHandler } from "./middleware/response-handler";
 const cors = require("cors");
 require("dotenv").config();
 
-import bodyParser from "body-parser";
+const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 
@@ -24,7 +25,10 @@ mongoose.connect(process.env.DATABASE, {
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(bodyParser.json());
+app.use(ResponseHandler);
+app.use("/api", () => { console.log("api")});
 
+routes.initRoutes(app);
 
 app.use(function (req: Request, res: Response) {
   res.status(404).send({ url: req.originalUrl + " not found" });
