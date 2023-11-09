@@ -6,10 +6,10 @@ interface Common {
   sku?: number;
   quantity?: number;
   productName?: string;
-  image?: string;
+  // image?: string;
   productDescription?: string;
 }
 
-export interface DTournament extends Common {}
+export interface DProduct extends Common {}
 
-export interface ITournament extends Common, mongoose.Document {}
+export interface IProduct extends Common, mongoose.Document {}

@@ -57,33 +57,8 @@ export const Validations = {
       .isLength({ max: 1000 })
       .withMessage("Name field should not be more than 1000 chars long!"),
   text: (key: string) => check(key).isString().isLength({ max: 1000 }),
+  sku : () => check("sku").isString().isLength({ max: 8 , min: 8 }).withMessage("SKU should be 8 characters long"),
 
-  largeText: (key: string) => check(key).isString().isLength({ max: 10000 }),
-  noPermissions: () => check("permissions").not().exists(),
-  zip: () => check("zip").isPostalCode("US").withMessage("Invalid zip code!"),
-  currency: (key: string = "price") => check(key).not().isEmpty().isNumeric(),
-  objectId: (key: string = "_id") =>
-    check(key)
-      .not()
-      .isEmpty()
-      .withMessage(`${key} cannot be empty`)
-      .custom((v) => isObjectId(v))
-      .withMessage(`${key} is not a valid mongoDb objectID`),
-  uploads: (key: string = "uploads") =>
-    check(`${key}.*._id`)
-      .not()
-      .isEmpty()
-      .withMessage(`${key} objects cannot be empty`)
-      .custom((v) => isObjectId(v))
-      .withMessage(`${key} objects are invalid`),
-  validString: (key: string) =>
-    check(key)
-      .notEmpty()
-      .withMessage(`${key} is required`)
-      .isString()
-      .withMessage(`${key} is not a string`),
-  validDate: (key: string) =>
-    check(key).isISO8601().withMessage(`${key} is not a valid date`),
 };
 
 export function isObjectId(v: string): boolean {
