@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 const cors = require("cors");
 require("dotenv").config();
 
-const bodyParser = require("body-parser");
+import bodyParser from "body-parser";
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 
