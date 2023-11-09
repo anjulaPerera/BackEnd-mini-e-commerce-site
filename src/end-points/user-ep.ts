@@ -76,5 +76,16 @@ export namespace UserEp {
     }
   }
 
-
+ export async function getLoggedInUserDetails(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      res.sendSuccess(req.user, "User Found!");
+    } catch (err) {
+      return res.sendError("Something Went Wrong!!");
+    }
+  }
+  
 }

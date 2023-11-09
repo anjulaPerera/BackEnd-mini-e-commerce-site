@@ -73,4 +73,145 @@ export namespace ProductEp {
       return res.sendError(error.message);
     }
   }
+
+  export async function updateProductById(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        return res.sendError(errors.array()[0]["msg"]);
+      }
+
+      const productId = req.params.id;
+
+      const productFound = await ProductDao.getProductById(productId);
+
+      const sku: any = req.body.sku ? req.body.sku : productFound?.sku;
+      const quantity: any = req.body.quantity
+        ? req.body.quantity
+        : productFound?.quantity;
+      const productName: any = req.body.productName
+        ? req.body.productName
+        : productFound?.productName;
+      // const image: any = req.body.image ? req.body.image : productFound?.image;
+      const productDescription: any = req.body.productDescription
+        ? req.body.productDescription
+        : productFound?.productDescription;
+
+      const newProductData: DProduct = {
+        sku: sku,
+        quantity: quantity,
+        productName: productName,
+        // image: image,
+        productDescription: productDescription,
+      };
+
+      const updateProduct = await ProductDao.updateProductById(
+        productId,
+        newProductData
+      );
+
+      if (!updateProduct) {
+        return res.sendError(
+          "Something Went Wrong. Could not update the password"
+        );
+      }
+      res.sendSuccess(updateProduct, "Successfully updated!");
+    } catch (error) {
+      return res.sendError(error.message);
+    }
+  }
+  export async function addFavoriteToProduct(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        return res.sendError(errors.array()[0]["msg"]);
+      }
+
+      const productId = req.params.id;
+
+      const productFound = await ProductDao.getProductById(productId);
+
+      const isFavorite: any = req.body.isFavorite
+
+      const newProductData: DProduct = {
+        isFavorite: isFavorite,
+      };
+
+      const updateProduct = await ProductDao.updateProductById(
+        productId,
+        newProductData
+      );
+
+      if (!updateProduct) {
+        return res.sendError(
+          "Something Went Wrong. Could not add favorite"
+        );
+      }
+      res.sendSuccess(updateProduct, "Successfully added favorite!");
+    } catch (error) {
+      return res.sendError(error.message);
+    }
+  }
+    
+    export async function deleteProductById(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const errors = validationResult(req);
+
+            if (!errors.isEmpty()) {
+                return res.sendError(errors.array()[0]["msg"]);
+            }
+
+            const productId = req.params.id;
+           
+            const updateProduct = await ProductDao.deleteProductById(
+                productId
+            );
+
+            if (!updateProduct) {
+                return res.sendError(
+                    "Something Went Wrong. Could not delete the product"
+                );
+            }
+            res.sendSuccess(updateProduct, "Successfully deleted!");
+        } catch (error) {
+            return res.sendError(error.message);
+        }
+    }
+
+    export async function getFavoritedProducts( 
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        try {
+            const errors = validationResult(req);
+
+            if (!errors.isEmpty()) {
+                return res.sendError(errors.array()[0]["msg"]);
+            }
+
+            const favProducts = await ProductDao.getFavoriteProducts();
+            if (!favProducts) {
+                return res.sendError("No Products Found");
+            }
+
+            return res.sendSuccess(favProducts, "All Products");
+        } catch (error) {
+            return res.sendError(error.message);
+        }
+    }
 }

@@ -7,6 +7,10 @@ export function initUserRoutes(app: Express) {
     UserEp.authenticateWithEmailValidationRules(),
     UserEp.authenticateWithEmail
   );
+  app.get(
+    "/api/auth/get/user",
+    UserEp.getLoggedInUserDetails
+  );
 
 
   

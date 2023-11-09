@@ -24,4 +24,30 @@ export namespace ProductDao {
     return userFound;
   }
 
+  export async function getProductById(id: string) {
+    const productFound = await Product.findById(id);
+    return productFound;
+  }
+
+  export async function updateProductById(id: string, data: DProduct) {
+    const productFound = await Product.findOneAndUpdate(
+      { _id: Types.ObjectId(id) },
+      { $set: data },
+      { new: true }
+    );
+    return productFound;
+  }
+
+
+  export async function deleteProductById(id: string) {
+    const productFound = await Product.findByIdAndDelete(id);
+    return productFound;
+  }
+
+  export async function getFavoriteProducts() {
+    const productFound = await Product.find({
+      isFavorite: true,
+    })
+    return productFound;
+  }
 }

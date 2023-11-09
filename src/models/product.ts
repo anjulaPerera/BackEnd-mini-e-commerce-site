@@ -8,6 +8,7 @@ interface Common {
   productName?: string;
   // image?: string;
   productDescription?: string;
+  isFavorite?: boolean;
 }
 
 export interface DProduct extends Common {}

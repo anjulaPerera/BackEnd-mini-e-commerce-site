@@ -7,10 +7,24 @@ export function initProductRoutes(app: Express) {
     ProductEp.validateWithProductValidationRules(),
     ProductEp.addNewProduct
   );
+ app.post(
+    "/api/auth/product/update",
+    ProductEp.validateWithProductValidationRules(),
+    ProductEp.updateProductById
+  );
  app.get(
     "/api/auth/product/all/view",
     ProductEp.getAllProducts
+ );
+     app.post(
+    "/api/auth/product/favorite/add",
+    ProductEp.validateWithProductValidationRules(),
+    ProductEp.addFavoriteToProduct
   );
+    
+
+    
+    
 
   
 }
