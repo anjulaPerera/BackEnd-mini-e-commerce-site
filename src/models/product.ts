@@ -3,12 +3,11 @@ import { Types } from "mongoose";
 import { Type } from "typescript";
 
 interface Common {
-  name: string;
-  numberOfTeams: number;
-  leagueTotalMatches: number;
-  oversPerMatch: number;
-  semiFinalMatches: number;
-  numberOfTeamMembers: number;
+  sku?: number;
+  quantity?: number;
+  productName?: string;
+  image?: string;
+  productDescription?: string;
 }
 
 export interface DTournament extends Common {}

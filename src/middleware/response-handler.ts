@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ErrorLogger } from "../Common/logging";
+import { ErrorLogger } from "../common/logging";
 
 export function ResponseHandler(
   req: Request,

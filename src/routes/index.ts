@@ -1,4 +1,7 @@
 import { Express, Request, Response } from "express";
+
+import { initUserRoutes } from "./user";
+import { initAdminRoutes } from "./admin";
 import { initProductRoutes } from "./product";
 
 
@@ -7,6 +10,9 @@ export function initRoutes(app: Express) {
     res.send("Well done!");
   });
 
+
+  initUserRoutes(app);
+  initAdminRoutes(app);
   initProductRoutes(app);
 
 
