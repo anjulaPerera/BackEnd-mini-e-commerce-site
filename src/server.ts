@@ -1,12 +1,13 @@
 
+require("dotenv").config();
 const app = require("express")();
 import { NextFunction, Request, Response } from "express";
 import { Authentication } from "./middleware/authentication";
 import * as routes from "./routes";
-
-
+import passportStartup from "./startup/passport";
+passportStartup(app);
 const cors = require("cors");
-require("dotenv").config();
+
 
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -21,7 +22,6 @@ mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DATABASE, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true,
 });
 
 app.use(bodyParser.urlencoded({ extended: true }));

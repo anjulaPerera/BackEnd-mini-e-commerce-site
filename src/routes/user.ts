@@ -9,5 +9,7 @@ export function initUserRoutes(app: Express) {
     UserEp.authenticateWithEmail
   );
 
+  app.get("api/auth/super-secure-resource", UserEp.testEp);
+
   
 }

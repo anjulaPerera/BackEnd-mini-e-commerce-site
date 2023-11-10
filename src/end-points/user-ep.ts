@@ -4,7 +4,8 @@ import {
   ValidationChain,
   validationResult,
 } from "express-validator";
-const { ObjectId } = require("mongodb").ObjectID;
+import { UserDao } from "../dao/user-dao";
+import User from "../schemas/user-schema";
 
 export namespace UserEp {
   export function authenticateWithEmailValidationRules(): ValidationChain[] {
@@ -48,7 +49,6 @@ export namespace UserEp {
 
       const email = req.body.email;
       const password = req.body.password;
-      const loginMethod = req.body.loginMethod;
       const remember = !!req.body.remember;
 
 
@@ -57,7 +57,7 @@ export namespace UserEp {
           return res.status(404).json({message:"User not found!"})
         }
 
-        UserDao.loginWithEmail(email, password, user)
+        UserDao.loginWithEmail(email, password, remember,user)
           .then((token: string) => {
             res.cookie("token", token, {
               httpOnly: true,
@@ -69,6 +69,19 @@ export namespace UserEp {
           })
           .catch(next);
     
+    } catch (err) {
+      return res.status(404).json({message:err})
+    }
+  }
+
+
+  export async function testEp(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      return res.status(200).json({message:"Test Endpoint!"})
     } catch (err) {
       return res.status(404).json({message:err})
     }

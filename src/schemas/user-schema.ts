@@ -5,21 +5,6 @@ import { IUser } from "../models/user-model";
 
 const jwt = require("jsonwebtoken");
 
-export const UserSchemaOptions: mongoose.SchemaOptions = {
-  _id: true,
-  id: false,
-  timestamps: true,
-  skipVersioning: true,
-  strict: false,
-  toJSON: {
-    getters: true,
-    virtuals: true,
-    transform: (doc, ret) => {
-      delete ret.password;
-    },
-  },
-};
-
 
 
 export const userSchema = new mongoose.Schema<IUser>(
@@ -43,11 +28,7 @@ export const userSchema = new mongoose.Schema<IUser>(
       unique: true,
       required: false,
     },
-    
-
-
   },
-  UserSchemaOptions
 );
 
 
@@ -56,16 +37,11 @@ export const userSchema = new mongoose.Schema<IUser>(
 userSchema.pre("save", function (next) {
   const user: any = this;
 
-  // only hash the password if it has been modified (or is new)
   if (!user.isModified("password")) return next();
 
-  // generate a salt
-  // noinspection JSIgnoredPromiseFromCall
   bcrypt.genSalt(10, function (err, salt) {
     if (err) return next(err);
 
-    // hash the password using our new salt
-    // noinspection JSIgnoredPromiseFromCall
     bcrypt.hash(user.password, salt, function (err, hash) {
       if (err) return next(err);
 
@@ -85,8 +61,7 @@ userSchema.methods.comparePassword = function (
   password: any
 ): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    // noinspection JSIgnoredPromiseFromCall
-    bcrypt.compare(password, this.password, function (err, isMatch) {
+    bcrypt.compare(password, this.password, function (err: any, isMatch: boolean | PromiseLike<boolean>) {
       if (err) {
         return reject(err);
       }
