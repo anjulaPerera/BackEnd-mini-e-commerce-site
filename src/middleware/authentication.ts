@@ -3,6 +3,8 @@ import { NextFunction, Request, Response } from "express";
 
 export class Authentication {
   public static verifyToken(req: Request, res: Response, next: NextFunction) {
+        console.log('Token from request:', req.headers.authorization);
+
     return passport.authenticate(
       'jwt',
       { session: false },
@@ -14,6 +16,9 @@ export class Authentication {
 
         req.user = user;
         req.body.user = user._id;
+
+        // Log the verified JWT payload
+        console.log("Verified JWT payload:", user);
 
         console.log("verify token==>",req.user);
         return next();

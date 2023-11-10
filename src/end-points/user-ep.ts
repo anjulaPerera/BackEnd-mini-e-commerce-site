@@ -83,7 +83,7 @@ export namespace UserEp {
     try {
       return res.status(200).json({message:"Test Endpoint!"})
     } catch (err) {
-      return res.status(404).json({message:err})
+      return res.status(404).json({message:`Succesfully got the error: ${err}`})
     }
   }
 

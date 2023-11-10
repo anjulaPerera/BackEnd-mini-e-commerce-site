@@ -5,6 +5,18 @@ import { NextFunction, Request, Response } from "express";
 import { Authentication } from "./middleware/authentication";
 import * as routes from "./routes";
 import passportStartup from "./startup/passport";
+import expressSession from 'express-session';
+
+
+app.use(
+  expressSession({
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+
 passportStartup(app);
 const cors = require("cors");
 
