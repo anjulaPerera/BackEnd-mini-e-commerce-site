@@ -12,21 +12,21 @@ export function initProductRoutes(app: Express) {
     ProductEp.getAllProducts
  );
  app.post(
-    "/api/auth/product/update",
+    "/api/auth/product/update/:productId",
     ProductEp.validateWithProductValidationRules(),
     ProductEp.updateProductById
   );
 
      app.post(
-    "/api/auth/product/favorite/add",
+    "/api/auth/product/favorite/add/:productId",
     ProductEp.validateWithProductValidationRules(),
     ProductEp.addFavoriteToProduct
   ); 
      app.post(
-    "/api/auth/product/delete",
+    "/api/auth/product/delete/:productId",
     ProductEp.deleteProductById
   ); 
-     app.post(
+     app.get(
     "/api/auth/product/get/fav-products",
     ProductEp.getFavoritedProducts
   ); 

@@ -6,7 +6,10 @@ import { DProduct } from "../models/product";
 
 export namespace ProductEp {
   export function validateWithProductValidationRules(): ValidationChain[] {
-    return [check("sku").isString().isLength({ max: 8 , min: 8 }).withMessage("SKU should be 8 characters long"),];
+    return [check("sku").isString().isLength({ max: 8, min: 8 }).withMessage("SKU should be 8 characters long"),
+            check("quantity").isNumeric().withMessage("Quantity should be a number"),
+    
+    ];
   }
 
   export async function addNewProduct(
@@ -87,9 +90,11 @@ export namespace ProductEp {
         return res.status(404).json({message:errors.array()[0]["msg"]})
       }
 
-      const productId = req.params.id;
+      const productId = req.params.productId;
+      console.log("productId to update=>", productId);
 
       const productFound = await ProductDao.getProductById(productId);
+      console.log("productFound to update=>", productFound);
 
       const sku: any = req.body.sku ? req.body.sku : productFound?.sku;
       const quantity: any = req.body.quantity
@@ -111,6 +116,7 @@ export namespace ProductEp {
         productDescription: productDescription,
       };
 
+      console.log("newProductData to update=>", newProductData);
       const updateProduct = await ProductDao.updateProductById(
         productId,
         newProductData
@@ -118,7 +124,7 @@ export namespace ProductEp {
 
       if (!updateProduct) {
      
-        return res.status(404).json({message:"Something Went Wrong. Could not update the password"})
+        return res.status(404).json({message:"Something Went Wrong. Could not update the product"})
       }
       return res.status(200).json({message:"Successfully updated!", data : {updateProduct : updateProduct}})
     } catch (error) {
@@ -130,18 +136,18 @@ export namespace ProductEp {
     res: Response,
     next: NextFunction
   ) {
+    console.log("inside EP")
     try {
-      const errors = validationResult(req);
+      console.log("inside EP try")
+    
 
-      if (!errors.isEmpty()) {
-        return res.status(404).json({message:errors.array()[0]["msg"]})
-      }
+      const productId = req.params.productId;
+      console.log("productId to fav=>", productId);
 
-      const productId = req.params.id;
-
-      const productFound = await ProductDao.getProductById(productId);
+console.log("req.body=>", req.body)
 
       const isFavorite: any = req.body.isFavorite;
+      console.log("isFavorite to update=>", isFavorite);
 
       const newProductData: DProduct = {
         isFavorite: isFavorite,
@@ -157,6 +163,7 @@ export namespace ProductEp {
       }
       return res.status(200).json({message:"Successfully added favorite!", data : {updateProduct : updateProduct}})
     } catch (error) {
+      console.log("inside EP catch", error)
       return res.status(404).json({message:error.message})
     }
   }
@@ -167,13 +174,9 @@ export namespace ProductEp {
     next: NextFunction
   ) {
     try {
-      const errors = validationResult(req);
+   
 
-      if (!errors.isEmpty()) {
-        return res.status(404).json({message:errors.array()[0]["msg"]})
-      }
-
-      const productId = req.params.id;
+      const productId = req.params.productId;
 
       const updateProduct = await ProductDao.deleteProductById(productId);
 
@@ -194,11 +197,7 @@ export namespace ProductEp {
     next: NextFunction
   ) {
     try {
-      const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        return res.status(404).json({message:errors.array()[0]["msg"]})
-      }
+   
 
       const favProducts = await ProductDao.getFavoriteProducts();
       if (!favProducts) {
