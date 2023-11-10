@@ -1,5 +1,6 @@
 import { Express, Request, Response } from "express";
 import { initUserRoutes } from "./user";
+import { initProductRoutes } from "./product";
 
 
 
@@ -10,6 +11,7 @@ export function initRoutes(app: Express) {
 
 
   initUserRoutes(app);
+  initProductRoutes(app);
 
 
 

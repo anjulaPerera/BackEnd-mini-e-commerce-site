@@ -75,15 +75,17 @@ export namespace UserEp {
   }
 
 
-  export async function testEp(
+ export async function getLoggedInUserDetails(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     try {
-      return res.status(200).json({message:"Test Endpoint!"})
+                    return res.status(200).json({message:"User found", data : {user: req.user}})
+
     } catch (err) {
-      return res.status(404).json({message:`Succesfully got the error: ${err}`})
+            return res.status(404).json({message:"Something Went Wrong!!"})
+
     }
   }
 
