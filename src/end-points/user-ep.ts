@@ -1,35 +1,35 @@
-
 import { NextFunction, Request, Response } from "express";
 import {
   check,
   ValidationChain,
   validationResult,
 } from "express-validator";
-
-import LoginMethod from "../enums/LoginMethod";
-import User from "../schemas/user-schema";
-import { UserDao } from "../dao/user-dao";
-import { Validations } from "../common/validation";
+const { ObjectId } = require("mongodb").ObjectID;
 
 export namespace UserEp {
   export function authenticateWithEmailValidationRules(): ValidationChain[] {
     return [
-      Validations.email(),
-      Validations.password(),
-      check("loginMethod")
-        .notEmpty()
-        .withMessage("loginMethod is required")
-        .isString()
-        .withMessage("loginMethod is not a String")
-        .isIn([LoginMethod.EMAIL])
-        .withMessage("loginMethod is not valid type"),
-      check("remember")
-        .notEmpty()
-        .withMessage("remember is required")
-        .isString()
-        .withMessage("remember is not a String")
-        .isIn(["TRUE", "FALSE"])
-        .withMessage("remember is not valid type"),
+      check("email")
+      .not()
+      .isEmpty()
+      .withMessage("Email is required!")
+      .isEmail()
+      .normalizeEmail({ gmail_remove_dots: false })
+      .withMessage("Invalid email address!"),
+      check("password")
+      .isString()
+      .not()
+      .isEmpty()
+      .withMessage("Password is required!")
+      .isLength({ min: 6, max: 40 })
+      .withMessage(
+        "Password must be at least 6 chars long & not more than 40 chars long!"
+      )
+      .not()
+      .isIn(["123", "password", "god", "abc"])
+      .withMessage("Do not use a common word as the password")
+      .matches(/\d/)
+      .withMessage("Password must contain a number!"),
     ];
   }
 
@@ -43,7 +43,7 @@ export namespace UserEp {
       const errors = validationResult(req);
 
       if (!errors.isEmpty()) {
-        return res.sendError(errors.array()[0]["msg"]);
+        return res.status(400).json({message:"Input validation failed!"})
       }
 
       const email = req.body.email;
@@ -51,13 +51,13 @@ export namespace UserEp {
       const loginMethod = req.body.loginMethod;
       const remember = !!req.body.remember;
 
-      if (loginMethod == LoginMethod.EMAIL) {
+
         let user: any = await User.findOne({ email: email });
         if (!user) {
-          return res.sendError("User Not Found in the System");
+          return res.status(404).json({message:"User not found!"})
         }
 
-        UserDao.loginWithEmail(email, password, loginMethod, remember, user)
+        UserDao.loginWithEmail(email, password, user)
           .then((token: string) => {
             res.cookie("token", token, {
               httpOnly: true,
@@ -65,27 +65,14 @@ export namespace UserEp {
               maxAge: 3600000 * 24 * 30,
             });
 
-            res.sendSuccess(token, "Successfully Logged In645!");
+              return res.status(200).json({message:"Logged In!", data : {token: token}})
           })
           .catch(next);
-      } else {
-        return res.sendError("Not A Valid login Method");
-      }
+    
     } catch (err) {
-      return res.sendError(err);
+      return res.status(404).json({message:err})
     }
   }
 
- export async function getLoggedInUserDetails(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    try {
-      res.sendSuccess(req.user, "User Found!");
-    } catch (err) {
-      return res.sendError("Something Went Wrong!!");
-    }
-  }
-  
+
 }
